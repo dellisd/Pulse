@@ -1,9 +1,14 @@
 package pulse.app.map.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.expressions.Expression.*
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
+import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer
 import kotlinx.android.synthetic.main.map_fragment.*
 import pulse.app.BuildConfig
 import pulse.app.R
@@ -19,6 +24,26 @@ class MapFragment : Fragment(R.layout.map_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         map_view.onCreate(savedInstanceState)
+        map_view.getMapAsync { map ->
+            map.setStyle(Style.LIGHT) { style ->
+                val extrusion = FillExtrusionLayer("3d-buildings", "composite").apply {
+                    sourceLayer = "building"
+                    setFilter(eq(`var`("extrude"), true))
+                    setProperties(
+                        fillExtrusionColor(Color.LTGRAY),
+                        fillExtrusionHeight(
+                            get("height")
+                        ),
+                        fillExtrusionBase(
+                            get("min-height")
+                        ),
+                        fillExtrusionOpacity(0.6f)
+                    )
+                }
+
+                style.addLayer(extrusion)
+            }
+        }
     }
 
     override fun onStart() {

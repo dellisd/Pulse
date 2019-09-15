@@ -12,7 +12,15 @@
         android:name="pulse.app.login.ui.LoginFragment"
         android:label="LoginFragment" >
         <action
-            android:id="@+id/action_loginFragment_to_mapFragment"
+            android:id="@+id/action_loginFragment_to_onboardFragment"
+            app:destination="@id/onboardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onboardFragment"
+        android:name="pulse.app.login.ui.OnboardFragment"
+        android:label="OnboardFragment" >
+        <action
+            android:id="@+id/action_onboardFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
     </fragment>
 </navigation>

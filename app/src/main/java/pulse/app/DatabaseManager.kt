@@ -1,10 +1,11 @@
 package pulse.app
 
 import android.util.Log
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.GeoQueryDataEventListener
+import com.firebase.geofire.GeoQueryEventListener
+import com.google.firebase.database.*
 
 object DatabaseManager {
     private val database = FirebaseDatabase.getInstance().reference
@@ -20,30 +21,45 @@ object DatabaseManager {
         database.child("users").child(userToken).child("location").setValue(location)
     }
 
-    fun subscribeToSongs(callback: (List<Song>) -> Unit) {
-        database.child("songs").addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-            }
+    fun subscribeToSongs(location: Location, callback: (List<Song>) -> Unit) {
+        val geofire = GeoFire(database.child("geofire"))
 
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            }
-
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-            }
-
-            override fun onChildAdded(snapshot: DataSnapshot, p1: String?) {
-                Log.d("DatabaseManager", "Child Added")
-                val songs = snapshot.children.map {
-                    it.getValue(Song::class.java)!!
+        geofire.queryAtLocation(GeoLocation(location.latitude, location.longitude), 2.0)
+            .addGeoQueryEventListener(object : GeoQueryEventListener {
+                override fun onGeoQueryReady() {
                 }
 
-                callback(songs)
-            }
+                override fun onKeyEntered(key: String?, location: GeoLocation?) {
+                    key ?: return
+                    database.child("songs").child(key)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {
 
-            override fun onChildRemoved(p0: DataSnapshot) {
-            }
-        })
+                            }
 
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                Log.d("DatabaseManager", "Child Added")
+                                val songs = dataSnapshot.children.mapNotNull {
+                                    val thing = it.getValue(Song::class.java)!!
+
+                                    thing.location ?: return@mapNotNull null
+                                    thing
+                                }
+
+                                callback(songs)
+                            }
+                        })
+                }
+
+                override fun onKeyMoved(key: String?, location: GeoLocation?) {
+                }
+
+                override fun onKeyExited(key: String?) {
+                }
+
+                override fun onGeoQueryError(error: DatabaseError?) {
+                }
+            })
     }
 
 }

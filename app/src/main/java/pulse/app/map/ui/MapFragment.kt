@@ -42,11 +42,8 @@ class MapFragment : Fragment(R.layout.map_fragment) {
         map_view.onCreate(savedInstanceState)
         map_view.getMapAsync {
             map = it
-            syncLocation()
             map.setStyle("mapbox://styles/dellisd/ck0k7ghuz4gvi1dqn0g62gvp6") { style ->
-                DatabaseManager.subscribeToSongs { songs ->
-                    MapVisualizer(requireContext(), map, songs).start()
-                }
+                syncLocation()
             }
         }
     }
@@ -111,6 +108,14 @@ class MapFragment : Fragment(R.layout.map_fragment) {
                         .build()
 
                 DatabaseManager.writeLocation(Location(location.latitude, location.longitude))
+                DatabaseManager.subscribeToSongs(
+                    Location(
+                        location.latitude,
+                        location.longitude
+                    )
+                ) { songs ->
+                    MapVisualizer(requireContext(), map, songs).start()
+                }
             }
         }
     }

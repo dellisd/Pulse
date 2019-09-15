@@ -45,21 +45,6 @@ class MapVisualizer(
         private lateinit var middleLayer: Layer
         private lateinit var innerLayer: Layer
 
-        private val layer = FillExtrusionLayer("3d-buildings-${this}", "composite").apply {
-            sourceLayer = "building"
-            setFilter(eq(`var`("extrude"), true))
-            setProperties(
-                fillExtrusionColor(Color.LTGRAY),
-                fillExtrusionHeight(
-                    literal(0)
-                ),
-                fillExtrusionBase(
-                    literal(0)
-                ),
-                fillExtrusionOpacity(0.6f)
-            )
-        }
-
         init {
             val source = map.style?.getSourceAs<VectorSource>("composite")
             val features =
@@ -141,7 +126,6 @@ class MapVisualizer(
             }
         }
 
-
         override fun run() {
             super.run()
 
@@ -161,13 +145,13 @@ class MapVisualizer(
                         height = song.beats[beatIndex].elementLoudness.toDouble()
 
                         outerLayer.setProperties(
-                            fillExtrusionHeight(literal(height * 5.0))
+                            fillExtrusionHeight(literal(height * 2.0))
                         )
                         middleLayer.setProperties(
-                            fillExtrusionHeight(literal(height * 10.0))
+                            fillExtrusionHeight(literal(height * 5.0))
                         )
                         innerLayer.setProperties(
-                            fillExtrusionHeight(literal(height * 15.0))
+                            fillExtrusionHeight(literal(height * 10.0))
                         )
                     }
                 } else if (beatIndex >= song.beats.size - 1) {
@@ -179,13 +163,13 @@ class MapVisualizer(
                     handler.post {
                         height -= delta / 100.0
                         outerLayer.setProperties(
-                            fillExtrusionHeight(literal(height * 5.0))
+                            fillExtrusionHeight(literal(height * 2.0))
                         )
                         middleLayer.setProperties(
-                            fillExtrusionHeight(literal(height * 10.0))
+                            fillExtrusionHeight(literal(height * 5.0))
                         )
                         innerLayer.setProperties(
-                            fillExtrusionHeight(literal(height * 15.0))
+                            fillExtrusionHeight(literal(height * 10.0))
                         )
                     }
                 }
@@ -196,9 +180,11 @@ class MapVisualizer(
                 }
             }
 
-            map.style?.removeLayer(outerLayer)
-            map.style?.removeLayer(middleLayer)
-            map.style?.removeLayer(innerLayer)
+            handler.post {
+                map.style?.removeLayer(outerLayer)
+                map.style?.removeLayer(middleLayer)
+                map.style?.removeLayer(innerLayer)
+            }
         }
     }
 

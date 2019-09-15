@@ -80,7 +80,7 @@ class MapFragment : Fragment(R.layout.map_fragment) {
                 syncLocation()
             }
 
-            map.addOnCameraIdleListener {
+            /*map.addOnCameraIdleListener {
                 val target = map.cameraPosition.target
                 DatabaseManager.subscribeToSongs(
                     Location(
@@ -90,7 +90,7 @@ class MapFragment : Fragment(R.layout.map_fragment) {
                 ) { songs ->
                     switchVisualizer(songs)
                 }
-            }
+            }*/
         }
     }
 

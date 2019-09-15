@@ -11,6 +11,8 @@ import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
 import kotlinx.android.synthetic.main.login_fragment.*
+import kotlinx.android.synthetic.main.login_fragment.mainIcon
+import kotlinx.android.synthetic.main.map_fragment.*
 import pulse.app.BuildConfig
 import pulse.app.MainActivity
 import pulse.app.R
@@ -59,6 +61,11 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 AUTHENTICATION_REQUEST,
                 request
             )
+        }
+
+        mainIcon.getMapAsync {
+            it.setStyle("mapbox://styles/dellisd/ck0k7ghuz4gvi1dqn0g62gvp6") { style ->
+            }
         }
     }
 

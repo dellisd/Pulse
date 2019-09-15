@@ -13,10 +13,7 @@ import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import kotlinx.android.synthetic.main.map_fragment.*
-import pulse.app.BuildConfig
-import pulse.app.DatabaseManager
-import pulse.app.Location
-import pulse.app.R
+import pulse.app.*
 import pulse.app.login.ui.iconSrc
 import pulse.app.login.ui.userName
 import pulse.app.viz.MapVisualizer
@@ -24,6 +21,8 @@ import pulse.app.viz.MapVisualizer
 class MapFragment : Fragment(R.layout.map_fragment) {
 
     private lateinit var map: MapboxMap
+
+    private var currentVisualizer: MapVisualizer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +41,18 @@ class MapFragment : Fragment(R.layout.map_fragment) {
             map = it
             map.setStyle("mapbox://styles/dellisd/ck0k7ghuz4gvi1dqn0g62gvp6") { style ->
                 syncLocation()
+            }
+
+            map.addOnCameraIdleListener {
+                val target = map.cameraPosition.target
+                DatabaseManager.subscribeToSongs(
+                    Location(
+                        target.latitude,
+                        target.longitude
+                    )
+                ) { songs ->
+                    switchVisualizer(songs)
+                }
             }
         }
     }
@@ -112,9 +123,16 @@ class MapFragment : Fragment(R.layout.map_fragment) {
                         location.longitude
                     )
                 ) { songs ->
-                    MapVisualizer(requireContext(), map, songs).start()
+                    switchVisualizer(songs)
                 }
             }
         }
+    }
+
+    private fun switchVisualizer(songs: List<Song>) {
+        currentVisualizer?.stop()
+
+        currentVisualizer = MapVisualizer(requireContext(), map, songs)
+        currentVisualizer?.start()
     }
 }

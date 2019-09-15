@@ -61,9 +61,10 @@ class MapFragment : Fragment(R.layout.map_fragment) {
 
         actionButton.setOnClickListener {
             if (activeSong) {
-                actionButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
-            } else {
                 actionButton.setImageResource(R.drawable.ic_pause_black_24dp);
+
+            } else {
+                actionButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
             }
             activeSong = !activeSong
         }

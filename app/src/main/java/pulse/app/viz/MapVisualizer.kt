@@ -65,8 +65,6 @@ class MapVisualizer(
             val features =
                 source?.querySourceFeatures(arrayOf("building"), literal(true))
 
-            val include = mutableSetOf<Feature>()
-
             val allIncludes = features?.mapNotNull { feature ->
                 song.location ?: return@mapNotNull null
 
@@ -91,22 +89,22 @@ class MapVisualizer(
 
             if (allIncludes != null) {
                 val outer = allIncludes.filter { (_, distance) ->
-                    distance < 200 && distance >= 100
+                    distance < 500 && distance >= 250
                 }.map { (feature, _) -> feature }
 
                 val middle = allIncludes.filter { (_, distance) ->
-                    distance < 100 && distance >= 50
+                    distance < 250 && distance >= 80
                 }.map { (feature, _) -> feature }
 
                 val inner = allIncludes.filter { (_, distance) ->
-                    distance < 50
+                    distance < 80
                 }.map { (feature, _) -> feature }
 
-                outerLayer = createLayer(outer, 2f)
+                outerLayer = createLayer(outer, 2f, Color.BLUE)
                 map.style?.addLayer(outerLayer)
-                middleLayer = createLayer(middle, 5f)
+                middleLayer = createLayer(middle, 5f, Color.GREEN)
                 map.style?.addLayer(middleLayer)
-                innerLayer = createLayer(inner, 10f)
+                innerLayer = createLayer(inner, 10f, Color.RED)
                 map.style?.addLayer(innerLayer)
 
                 /*if (elapsedTime > 0) {
@@ -120,7 +118,7 @@ class MapVisualizer(
             }
         }
 
-        private fun createLayer(features: List<Feature>, factor: Float): Layer {
+        private fun createLayer(features: List<Feature>, factor: Float, color: Int): Layer {
             val collection = FeatureCollection.fromFeatures(features)
 
             val source = GeoJsonSource("3d-buildings-${this}-$factor", collection)
@@ -131,7 +129,7 @@ class MapVisualizer(
                 "3d-buildings-${this}-$factor"
             ).apply {
                 setProperties(
-                    fillExtrusionColor(Color.RED),
+                    fillExtrusionColor(color),
                     fillExtrusionHeight(
                         literal(factor)
                     ),
@@ -141,12 +139,6 @@ class MapVisualizer(
                     fillExtrusionOpacity(0.7f)
                 )
             }
-        }
-
-        private fun makeSwitch(features: List<Feature>): Array<Expression> {
-            return features.flatMap { feature ->
-                listOf<Expression>(get("\$id"), literal(true))
-            }.toTypedArray()
         }
 
 
@@ -163,20 +155,19 @@ class MapVisualizer(
                 elapsedTime += delta
 
                 if (beatIndex < song.beats.size - 1 && elapsedTime >= song.beats[beatIndex + 1].elementStart) {
-                    val duration = song.beats[beatIndex + 1].elementStart - elapsedTime
                     beatIndex++
 
                     handler.post {
                         height = song.beats[beatIndex].elementLoudness.toDouble()
 
                         outerLayer.setProperties(
-                            fillExtrusionHeight(literal(height * 2.0))
-                        )
-                        middleLayer.setProperties(
                             fillExtrusionHeight(literal(height * 5.0))
                         )
-                        innerLayer.setProperties(
+                        middleLayer.setProperties(
                             fillExtrusionHeight(literal(height * 10.0))
+                        )
+                        innerLayer.setProperties(
+                            fillExtrusionHeight(literal(height * 15.0))
                         )
                     }
                 } else if (beatIndex >= song.beats.size - 1) {
@@ -186,15 +177,15 @@ class MapVisualizer(
                     map.style?.removeLayer(innerLayer)
                 } else {
                     handler.post {
-                        height -= delta
+                        height -= delta / 100.0
                         outerLayer.setProperties(
-                            fillExtrusionHeight(literal(height * 2.0))
-                        )
-                        middleLayer.setProperties(
                             fillExtrusionHeight(literal(height * 5.0))
                         )
-                        innerLayer.setProperties(
+                        middleLayer.setProperties(
                             fillExtrusionHeight(literal(height * 10.0))
+                        )
+                        innerLayer.setProperties(
+                            fillExtrusionHeight(literal(height * 15.0))
                         )
                     }
                 }

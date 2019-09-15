@@ -32,7 +32,7 @@ import com.bumptech.glide.Glide
 
 //import android.R
 
-var activeSong = false;
+var activeSong = true;
 
 class MapFragment : Fragment(R.layout.map_fragment) {
 
@@ -62,11 +62,21 @@ class MapFragment : Fragment(R.layout.map_fragment) {
         actionButton.setOnClickListener {
             if (activeSong) {
                 actionButton.setImageResource(R.drawable.ic_pause_black_24dp);
+                spotifyAppRemote?.playerApi?.pause()
 
             } else {
                 actionButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+                spotifyAppRemote?.playerApi?.resume()
             }
             activeSong = !activeSong
+        }
+
+        back.setOnClickListener {
+            spotifyAppRemote?.playerApi?.skipPrevious()
+        }
+
+        forward.setOnClickListener {
+            spotifyAppRemote?.playerApi?.skipNext()
         }
 
         userField.text = userName
@@ -119,10 +129,13 @@ class MapFragment : Fragment(R.layout.map_fragment) {
                                 Log.d("MainActivity", track.name + " by " + track.artist.name)
                                 titleBox.text = track.name
                                 artistBox.text = track.artist.name
-                                Glide.with(this@MapFragment)
+                                /*Glide.with(this@MapFragment)
                                     .load(track.imageUri)
-                                    .into(coverArt)
-
+                                    .into(coverArt)*/
+                                spotifyAppRemote.imagesApi.getImage(track.imageUri)
+                                    .setResultCallback {
+                                        coverArt.setImageBitmap(it)
+                                    }
 //                                coverArt.setImageResource(track.imageUri)
                             }
                         }

@@ -84,13 +84,16 @@
 
             <ImageButton
                 android:id="@+id/coverArt"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
+                android:maxWidth="72dp"
+                android:maxHeight="72dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/imageButton5"
-                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintDimensionRatio="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/avatars" />
@@ -108,7 +111,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/divider7" />
 
             <ImageButton
-                android:id="@+id/imageButton10"
+                android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -139,7 +142,7 @@
                 app:srcCompat="@drawable/ic_play_arrow_black_24dp" />
 
             <ImageButton
-                android:id="@+id/imageButton8"
+                android:id="@+id/forward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"

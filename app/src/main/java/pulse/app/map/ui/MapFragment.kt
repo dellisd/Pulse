@@ -22,7 +22,10 @@ import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import kotlinx.android.synthetic.main.map_fragment.*
 import pulse.app.BuildConfig
+import pulse.app.DatabaseManager
+import pulse.app.Location
 import pulse.app.R
+import pulse.app.viz.MapVisualizer
 
 class MapFragment : Fragment(R.layout.map_fragment) {
 
@@ -40,23 +43,10 @@ class MapFragment : Fragment(R.layout.map_fragment) {
         map_view.getMapAsync {
             map = it
             syncLocation()
-            map.setStyle(Style.LIGHT) { style ->
-                val extrusion = FillExtrusionLayer("3d-buildings", "composite").apply {
-                    sourceLayer = "building"
-                    setFilter(eq(`var`("extrude"), true))
-                    setProperties(
-                        fillExtrusionColor(Color.LTGRAY),
-                        fillExtrusionHeight(
-                            get("height")
-                        ),
-                        fillExtrusionBase(
-                            get("min-height")
-                        ),
-                        fillExtrusionOpacity(0.6f)
-                    )
+            map.setStyle("mapbox://styles/dellisd/ck0k7ghuz4gvi1dqn0g62gvp6") { style ->
+                DatabaseManager.subscribeToSongs { songs ->
+                    MapVisualizer(requireContext(), map, songs).start()
                 }
-
-                style.addLayer(extrusion)
             }
         }
     }
@@ -119,6 +109,8 @@ class MapFragment : Fragment(R.layout.map_fragment) {
                     CameraPosition.Builder().target(LatLng(location.latitude, location.longitude))
                         .zoom(15.0)
                         .build()
+
+                DatabaseManager.writeLocation(Location(location.latitude, location.longitude))
             }
         }
     }

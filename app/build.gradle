@@ -63,12 +63,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.0.0'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.1.1'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.firebase:geofire-android:3.0.0'
 
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.3.0'
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.1.0"
     implementation "androidx.navigation:navigation-ui-ktx:2.1.0"
 
+    implementation project(':spotify-app-remote')
 }
 
 apply plugin: 'com.google.gms.google-services'

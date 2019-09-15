@@ -27,6 +27,8 @@ import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
 import android.util.Log
 import android.R.attr.track
+import com.bumptech.glide.Glide
+
 //import android.R
 
 
@@ -92,14 +94,18 @@ class MapFragment : Fragment(R.layout.map_fragment) {
 
                     // Now you can start interacting with App Remote
 //                        connected();
-                    spotifyAppRemote?.getPlayerApi()
-                        ?.subscribeToPlayerState()
-                        ?.setEventCallback { playerState ->
+                    spotifyAppRemote.playerApi
+                        .subscribeToPlayerState()
+                        .setEventCallback { playerState ->
                             val track = playerState.track
                             if (track != null) {
                                 Log.d("MainActivity", track.name + " by " + track.artist.name)
                                 titleBox.text = track.name
                                 artistBox.text = track.artist.name
+                                Glide.with(this@MapFragment)
+                                    .load(track.imageUri)
+                                    .into(coverArt)
+
 //                                coverArt.setImageResource(track.imageUri)
                             }
                         }
@@ -183,7 +189,7 @@ class MapFragment : Fragment(R.layout.map_fragment) {
     private fun switchVisualizer(songs: List<Song>) {
         currentVisualizer?.stop()
 
-        currentVisualizer = MapVisualizer(requireContext(), map, songs)
+        currentVisualizer = MapVisualizer(requireActivity(), map, songs)
         currentVisualizer?.start()
     }
 }

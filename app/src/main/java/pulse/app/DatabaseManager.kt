@@ -9,7 +9,9 @@ import com.google.firebase.database.*
 
 object DatabaseManager {
     private val database = FirebaseDatabase.getInstance().reference
+    private val geofire = GeoFire(database.child("geofire"))
     private lateinit var userToken: String
+    private var currentListener: GeoQueryEventListener? = null
 
 
     fun writeAuthToken(token: String, expiresAt: Long) {
@@ -22,44 +24,43 @@ object DatabaseManager {
     }
 
     fun subscribeToSongs(location: Location, callback: (List<Song>) -> Unit) {
-        val geofire = GeoFire(database.child("geofire"))
+        currentListener = object : GeoQueryEventListener {
+            override fun onGeoQueryReady() {
+            }
 
-        geofire.queryAtLocation(GeoLocation(location.latitude, location.longitude), 2.0)
-            .addGeoQueryEventListener(object : GeoQueryEventListener {
-                override fun onGeoQueryReady() {
-                }
+            override fun onKeyEntered(key: String?, location: GeoLocation?) {
+                key ?: return
+                database.child("songs").child(key)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onCancelled(p0: DatabaseError) {
 
-                override fun onKeyEntered(key: String?, location: GeoLocation?) {
-                    key ?: return
-                    database.child("songs").child(key)
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onCancelled(p0: DatabaseError) {
+                        }
 
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            Log.d("DatabaseManager", "Child Added")
+                            val songs = dataSnapshot.children.mapNotNull {
+                                val thing = it.getValue(Song::class.java)!!
+
+                                thing.location ?: return@mapNotNull null
+                                thing
                             }
 
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                Log.d("DatabaseManager", "Child Added")
-                                val songs = dataSnapshot.children.mapNotNull {
-                                    val thing = it.getValue(Song::class.java)!!
+                            callback(songs)
+                        }
+                    })
+            }
 
-                                    thing.location ?: return@mapNotNull null
-                                    thing
-                                }
+            override fun onKeyMoved(key: String?, location: GeoLocation?) {
+            }
 
-                                callback(songs)
-                            }
-                        })
-                }
+            override fun onKeyExited(key: String?) {
+            }
 
-                override fun onKeyMoved(key: String?, location: GeoLocation?) {
-                }
-
-                override fun onKeyExited(key: String?) {
-                }
-
-                override fun onGeoQueryError(error: DatabaseError?) {
-                }
-            })
+            override fun onGeoQueryError(error: DatabaseError?) {
+            }
+        }
+        geofire.queryAtLocation(GeoLocation(location.latitude, location.longitude), 5.0)
+            .addGeoQueryEventListener(currentListener)
     }
 
 }

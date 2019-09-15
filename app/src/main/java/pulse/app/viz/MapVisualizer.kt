@@ -195,6 +195,10 @@ class MapVisualizer(
                     sleep(pause)
                 }
             }
+
+            map.style?.removeLayer(outerLayer)
+            map.style?.removeLayer(middleLayer)
+            map.style?.removeLayer(innerLayer)
         }
     }
 
@@ -216,7 +220,10 @@ class MapVisualizer(
     }
 
     fun stop() {
-
+        songMap.values.forEach {
+            it.isRunning = false
+            it.join()
+        }
     }
 
 

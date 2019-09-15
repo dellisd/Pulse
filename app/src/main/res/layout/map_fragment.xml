@@ -76,6 +76,7 @@
                 android:layout_marginStart="20dp"
                 android:text="TextView"
                 android:textColor="@android:color/white"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/divider7"
                 app:layout_constraintStart_toEndOf="@+id/coverArt"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -100,6 +101,7 @@
                 android:layout_marginStart="20dp"
                 android:text="TextView"
                 android:textColor="@android:color/white"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/coverArt"
                 app:layout_constraintStart_toEndOf="@+id/coverArt"
                 app:layout_constraintTop_toBottomOf="@+id/divider7" />

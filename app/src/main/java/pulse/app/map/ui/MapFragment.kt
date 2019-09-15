@@ -37,7 +37,7 @@ var activeSong = false;
 class MapFragment : Fragment(R.layout.map_fragment) {
 
     private lateinit var map: MapboxMap
-    private val mSpotifyAppRemote: SpotifyAppRemote? = null
+    private var spotifyAppRemote: SpotifyAppRemote? = null
 
     private var currentVisualizer: MapVisualizer? = null
 
@@ -105,7 +105,7 @@ class MapFragment : Fragment(R.layout.map_fragment) {
             object : Connector.ConnectionListener {
 
                 override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
-//                        SpotifyAppRemote = spotifyAppRemote;
+                        this@MapFragment.spotifyAppRemote = spotifyAppRemote;
                     Log.d("MainActivity", "Connected! Yay!");
 
                     // Now you can start interacting with App Remote

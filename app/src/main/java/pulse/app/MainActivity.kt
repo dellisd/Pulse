@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
                 // TODO: Navigate to MAP
 
-                findNavController(R.id.nav_fragment).navigate(R.id.mapFragment)
+                findNavController(R.id.nav_fragment).navigate(R.id.onboardFragment)
             } else {
                 Toast.makeText(this, "Signed in failed", Toast.LENGTH_SHORT).show()
             }

@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.mapbox.mapboxsdk.Mapbox
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
@@ -15,9 +16,14 @@ import pulse.app.MainActivity
 import pulse.app.R
 
 class LoginFragment : Fragment(R.layout.login_fragment) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Mapbox.getInstance(requireContext(), BuildConfig.MAPBOX_KEY)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         button.setOnClickListener {
             val builder = AuthenticationRequest.Builder(

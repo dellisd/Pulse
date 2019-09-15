@@ -1,6 +1,5 @@
 package pulse.app.map.ui
 
-import android.graphics.Color
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -8,23 +7,18 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.maps.Style
-import com.mapbox.mapboxsdk.style.expressions.Expression.*
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
-import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import kotlinx.android.synthetic.main.map_fragment.*
 import pulse.app.BuildConfig
 import pulse.app.DatabaseManager
 import pulse.app.Location
 import pulse.app.R
+import pulse.app.login.ui.iconSrc
+import pulse.app.login.ui.userName
 import pulse.app.viz.MapVisualizer
 
 class MapFragment : Fragment(R.layout.map_fragment) {
@@ -39,8 +33,12 @@ class MapFragment : Fragment(R.layout.map_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        map_view.onCreate(savedInstanceState)
-        map_view.getMapAsync {
+        userField.text = userName
+
+        mapUserIcon.setImageResource(iconSrc)
+
+        mainIcon.onCreate(savedInstanceState)
+        mainIcon.getMapAsync {
             map = it
             map.setStyle("mapbox://styles/dellisd/ck0k7ghuz4gvi1dqn0g62gvp6") { style ->
                 syncLocation()
@@ -50,32 +48,32 @@ class MapFragment : Fragment(R.layout.map_fragment) {
 
     override fun onStart() {
         super.onStart()
-        map_view.onStart()
+        mainIcon.onStart()
     }
 
     override fun onPause() {
         super.onPause()
-        map_view.onPause()
+        mainIcon.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        map_view.onStop()
+        mainIcon.onStop()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        map_view.onDestroy()
+        mainIcon.onDestroy()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        map_view.onLowMemory()
+        mainIcon.onLowMemory()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        map_view.onSaveInstanceState(outState)
+        mainIcon.onSaveInstanceState(outState)
     }
 
     override fun onRequestPermissionsResult(

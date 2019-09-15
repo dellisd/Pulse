@@ -1,6 +1,7 @@
 package pulse.app.map.ui
 
 import android.Manifest
+import android.R.attr.action
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -29,7 +30,7 @@ import android.util.Log
 import android.R.attr.track
 //import android.R
 
-
+var activeSong = false;
 
 class MapFragment : Fragment(R.layout.map_fragment) {
 
@@ -44,10 +45,25 @@ class MapFragment : Fragment(R.layout.map_fragment) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (!activeSong) {
+            actionButton.setImageResource(R.drawable.ic_pause_black_24dp);
+        } else {
+            actionButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+        }
+
         super.onViewCreated(view, savedInstanceState)
 
         moveLocation.setOnClickListener {
             syncLocation()
+        }
+
+        actionButton.setOnClickListener {
+            if (activeSong) {
+                actionButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+            } else {
+                actionButton.setImageResource(R.drawable.ic_pause_black_24dp);
+            }
+            activeSong = !activeSong
         }
 
         userField.text = userName

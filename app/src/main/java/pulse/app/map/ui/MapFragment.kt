@@ -21,9 +21,23 @@ import pulse.app.login.ui.iconSrc
 import pulse.app.login.ui.userName
 import pulse.app.viz.MapVisualizer
 
+import com.spotify.android.appremote.api.ConnectionParams;
+import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.SpotifyAppRemote;
+
+import com.spotify.protocol.client.Subscription;
+import com.spotify.protocol.types.PlayerState;
+import com.spotify.protocol.types.Track;
+import android.util.Log
+import android.R.attr.track
+//import android.R
+
+
+
 class MapFragment : Fragment(R.layout.map_fragment) {
 
     private lateinit var map: MapboxMap
+    private val mSpotifyAppRemote: SpotifyAppRemote? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +46,10 @@ class MapFragment : Fragment(R.layout.map_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        moveLocation.setOnClickListener {
+            syncLocation()
+        }
 
         userField.text = userName
 
@@ -49,6 +67,39 @@ class MapFragment : Fragment(R.layout.map_fragment) {
     override fun onStart() {
         super.onStart()
         mainIcon.onStart()
+        val connectionParams = ConnectionParams.Builder(BuildConfig.SPOTIFY_CLIENT_ID)
+            .setRedirectUri("pulseapp://callback")
+            .showAuthView(true)
+            .build()
+
+        SpotifyAppRemote.connect(requireContext(), connectionParams,
+            object : Connector.ConnectionListener {
+
+                override fun onConnected(spotifyAppRemote: SpotifyAppRemote) {
+//                        SpotifyAppRemote = spotifyAppRemote;
+                    Log.d("MainActivity", "Connected! Yay!");
+
+                    // Now you can start interacting with App Remote
+//                        connected();
+                    spotifyAppRemote?.getPlayerApi()
+                        ?.subscribeToPlayerState()
+                        ?.setEventCallback { playerState ->
+                            val track = playerState.track
+                            if (track != null) {
+                                Log.d("MainActivity", track.name + " by " + track.artist.name)
+                                titleBox.text = track.name
+                                artistBox.text = track.artist.name
+//                                coverArt.setImageResource(track.imageUri)
+                            }
+                        }
+
+                }
+
+                override fun onFailure(throwable: Throwable) {
+                    Log.e("MyActivity", throwable.message, throwable);
+                    // Something went wrong when attempting to connect! Handle errors here
+                }
+            });
     }
 
     override fun onPause() {

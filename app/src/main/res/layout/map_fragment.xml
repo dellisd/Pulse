@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="@+id/mapUserIcon" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/moveLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -70,18 +70,18 @@
             android:backgroundTintMode="add">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/titleBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="TextView"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toTopOf="@+id/divider7"
-                app:layout_constraintStart_toEndOf="@+id/imageButton11"
+                app:layout_constraintStart_toEndOf="@+id/coverArt"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/imageButton11"
+                android:id="@+id/coverArt"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
@@ -93,14 +93,14 @@
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/artistBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="TextView"
                 android:textColor="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/imageButton11"
-                app:layout_constraintStart_toEndOf="@+id/imageButton11"
+                app:layout_constraintBottom_toBottomOf="@+id/coverArt"
+                app:layout_constraintStart_toEndOf="@+id/coverArt"
                 app:layout_constraintTop_toBottomOf="@+id/divider7" />
 
             <ImageButton
@@ -161,9 +161,9 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="#A1ED00"
-                app:layout_constraintBottom_toBottomOf="@+id/imageButton11"
+                app:layout_constraintBottom_toBottomOf="@+id/coverArt"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageButton11"
+                app:layout_constraintStart_toEndOf="@+id/coverArt"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.541" />
 
